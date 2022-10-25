@@ -8,7 +8,7 @@
 
 namespace cudabm {
 
-void BenchmarkBase::engineRun() { engine_->run(0); }
+void BenchmarkBase::engineRun() { return;/*engine_->run(0);*/ }
 
 // poplar::Device BenchmarkBase::createDevice(unsigned numIpus, bool useIpuModel) {
 //   if (useIpuModel) {
@@ -64,7 +64,7 @@ void BenchmarkBase::monitorFunc() {
   //     monitorQueue_.pop_front();
   //   }
   //   usleep(100);
-  }
+  // }
 }
 
 void BenchmarkBase::runBenchmark(benchmark::State& state) {

@@ -19,18 +19,20 @@ endif()
 # Options
 option(USE_SYSTEM_LIBS "use system libs or not" OFF)
 
-# Find poplar SDK
-find_package(poplar REQUIRED)
+# Find cuda SDK
+find_package(CUDA REQUIRED)
+
 
 if(USE_SYSTEM_LIBS)
   find_package(GTest REQUIRED)
   find_package(benchmark REQUIRED)
 else()
+
   include(FetchContent)
   # googletest
   FetchContent_Declare(
     googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_REPOSITORY git@github.com:google/googletest.git
     GIT_TAG release-1.11.0
     GIT_SHALLOW TRUE)
   # https://cmake.org/cmake/help/latest/policy/CMP0077.html
@@ -38,9 +40,10 @@ else()
   set(INSTALL_GTEST OFF)
   FetchContent_MakeAvailable(googletest)
   # googlebenchmark
+
   FetchContent_Declare(
     googlebenchmark
-    GIT_REPOSITORY https://github.com/google/benchmark.git
+    GIT_REPOSITORY git@github.com:google/benchmark.git
     GIT_TAG v1.6.2
     GIT_SHALLOW TRUE)
   set(BENCHMARK_ENABLE_TESTING OFF)
@@ -48,9 +51,14 @@ else()
   set(HAVE_GNU_POSIX_REGEX OFF)
   set(BENCHMARK_INSTALL_DOCS OFF)
   FetchContent_MakeAvailable(googlebenchmark)
+FetchContent_GetProperties(googlebenchmark)
+
 endif()
 
 enable_testing()
+
+include_directories(${googlebenchmark_BINARY_DIR}/include)
+include_directories(${googlebenchmark_SOURCE_DIR}/include)
 
 include_directories(benchmarks)
 

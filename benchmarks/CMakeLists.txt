@@ -1,16 +1,18 @@
-add_subdirectory(ipubm_lib)
+add_subdirectory(bm_lib)
 
-set(SOURCE_FILES ipu_benchmark.cc)
+set(SOURCE_FILES cuda_benchmark.cc)
 
 list(
-  APPEND
+  APPEND 
   SOURCE_FILES
+  reduce1/reduce1.cc
+  reduce1/reduce1.cu
   )
 
-add_executable(cuda_benchmark ${SOURCE_FILES})
+cuda_add_executable(cuda_benchmark ${SOURCE_FILES})
 target_link_libraries(
   cuda_benchmark
-  gcl
-  ipubm_lib)
+  bm_lib
+  )
 
 install(TARGETS cuda_benchmark RUNTIME)

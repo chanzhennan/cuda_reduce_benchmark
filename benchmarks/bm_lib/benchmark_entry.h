@@ -3,12 +3,10 @@
 
 #include <benchmark/benchmark.h>
 
-#include "hw_context.h"
 
 // Helper macro to create a main routine in a test that runs the benchmarks
 #define CUDA_BENCHMARK_MAIN()                                      \
   int main(int argc, char** argv) {                                     \
-    ipubm::addHwContext();                                              \
     ::benchmark::Initialize(&argc, argv);                               \
     if (::benchmark::ReportUnrecognizedArguments(argc, argv)) return 1; \
     ::benchmark::RunSpecifiedBenchmarks();                              \

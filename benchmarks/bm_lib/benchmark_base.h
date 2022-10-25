@@ -59,7 +59,7 @@ class BenchmarkBase : public benchmark::Fixture {
     // releaseEngine();
   }
 
-  size_t numTiles() { return device_.getTarget().getNumTiles(); }
+  size_t numTiles() { return 1;}//device_.getTarget().getNumTiles(); }
 
   size_t numIpus() { return numIpus_; }
 
@@ -92,7 +92,7 @@ class BenchmarkBase : public benchmark::Fixture {
 
   // poplar::Device createDevice(unsigned numIpus, bool useIpuModel = false);
 
-  void detachDevice(poplar::Device &device);
+  // void detachDevice(poplar::Device &device);
 
   void releaseEngine();
 
@@ -102,7 +102,7 @@ class BenchmarkBase : public benchmark::Fixture {
   // poplar::Device device_;
 
   // /**
-  //  * \brief poplar execution engine
+  //  * \brief poplar execution engine`
   //  */
   // std::unique_ptr<poplar::Engine> engine_;
 

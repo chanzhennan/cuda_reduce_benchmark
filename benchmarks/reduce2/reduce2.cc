@@ -14,15 +14,10 @@
 
 namespace bm = benchmark;
 
-enum class DataType {
-  INT,
-  FLOAT,
-};
-
 template <typename T>
-class Reduce1 : public cudabm::BenchmarkBase {
+class Reduce2 : public cudabm::BenchmarkBase {
  public:
-  Reduce1() : cudabm::BenchmarkBase(/*numIpus=*/1, /*enableMonitor=*/true) {}
+  Reduce2() : cudabm::BenchmarkBase(/*numIpus=*/1, /*enableMonitor=*/true) {}
 
   void callKernel(size_t data_size) {
 
@@ -52,21 +47,21 @@ class Reduce1 : public cudabm::BenchmarkBase {
   }
 };
 
-#define BENCHMARK_REDUCE1_OP(name, dType)                   \
-  BENCHMARK_TEMPLATE_DEFINE_F(Reduce1, name, dType)(bm::State & st) {              \
+#define BENCHMARK_REDUCE2_OP(name, dType)                   \
+  BENCHMARK_TEMPLATE_DEFINE_F(Reduce2, name, dType)(bm::State & st) {              \
     callKernel(st.range(0));                      \
     runBenchmark(st);                                                       \
     st.counters["FLOPS"] = bm::Counter{                                     \
         dataSize(st), bm::Counter::kIsIterationInvariantRate}; \
   }                                                                         \
-  BENCHMARK_REGISTER_F(Reduce1, name)                              \
+  BENCHMARK_REGISTER_F(Reduce2, name)                              \
       ->Unit(bm::kMillisecond)                                              \
       ->RangeMultiplier(2)                                                  \
       ->Range(32, 32);
 
 
-#define BENCHMARK_REDUCE1_OP_TYPE(dType)                    \
-  BENCHMARK_REDUCE1_OP(Reduce_##dType, dType)
+#define BENCHMARK_REDUCE2_OP_TYPE(dType)                    \
+  BENCHMARK_REDUCE2_OP(Reduce_##dType, dType)
 
-BENCHMARK_REDUCE1_OP_TYPE(float)
+BENCHMARK_REDUCE2_OP_TYPE(float)
 // BENCHMARK_REDUCE1_OP_TYPE(int)

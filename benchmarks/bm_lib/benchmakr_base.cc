@@ -84,7 +84,7 @@ void BenchmarkBase::runBenchmark(benchmark::State& state) {
 
   if (enableMonitor_) {
     for (int i = 0; i < monitorQueue_.size(); i++) {
-      state.counters[ipubm::strFormat("power_%d", i)] =
+      state.counters[cudabm::strFormat("power_%d", i)] =
           monitorQueue_.at(i).power;
     }
   }

@@ -1,9 +1,9 @@
-#include <reduce1/reduce1.cuh>
+#include <reduce2/reduce2.cuh>
 #include <stdio.h>
 
 
 // template <typename T>
-__global__ void reduce1(float *g_idata, float *g_odata) 
+__global__ void reduce2(float *g_idata, float *g_odata) 
 {
   extern __shared__ float sdata[];
   
@@ -14,13 +14,14 @@ __global__ void reduce1(float *g_idata, float *g_odata)
   sdata[tid] = g_idata[i];
   __syncthreads();
   // do reduction in shared mem
-  for(unsigned int s=1; s < blockDim.x; s *= 2)
+  for (unsigned int s=1; s < blockDim.x; s *= 2) 
   {
-    if (tid % (2*s) == 0) 
+    int index = 2 * s * tid;
+    if (index < blockDim.x) 
     {
-      sdata[tid] += sdata[tid + s];
+      sdata[index] += sdata[index + s];
     }
-  __syncthreads();
+    __syncthreads();
   }
   // write result for this block to global mem
   if (tid == 0) g_odata[blockIdx.x] = sdata[0];
@@ -29,12 +30,12 @@ __global__ void reduce1(float *g_idata, float *g_odata)
 
 
 // template <typename T>
-void call_reduce1(float *g_idata, float *g_odata, int dataSize)
+void call_reduce2(float *g_idata, float *g_odata, int dataSize)
 {
 
   int TPB = 512;
   int BSIZE = (dataSize + TPB - 1) / TPB;
-  reduce1<<<BSIZE, TPB, TPB * sizeof(float)>>>(g_idata, g_odata);
+  reduce2<<<BSIZE, TPB, TPB * sizeof(float)>>>(g_idata, g_odata);
   cudaDeviceSynchronize();
 
 }

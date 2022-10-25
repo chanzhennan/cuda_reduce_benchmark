@@ -8,7 +8,7 @@
 #include <random>
 #include <vector>
 
-namespace ipubm {
+namespace cudabm {
 
 std::string strFormatImp(const char* msg, va_list args) {
   // we might need a second shot at this, so pre-emptivly make a copy
@@ -55,4 +55,35 @@ void genRandom(std::vector<float>& vec) {
   std::generate_n(vec.begin(), vec.size(), [&] { return dist(gen); });
 }
 
-}  // namespace ipubm
+void genRandom(float* vec, size_t len) {
+  std::mt19937 gen;
+  std::uniform_real_distribution<> dist(-10.0, 10.0);
+  for (int i = 0; i < len; i++)
+  {
+    vec[i] = dist(gen);
+  }
+}
+
+void Print(float* vec, size_t len)
+{
+  for (int i = 0; i < len; i++)
+  {
+    printf("%f ", vec[i]);
+    if (i % 10 == 0)
+    {
+      printf("\n");
+    }
+  }
+}
+
+float Sum(float* vec, size_t len)
+{
+  float sum = 0.f;
+  for (int i = 0; i < len; i++)
+  {
+    sum += vec[i];
+  }
+  return sum;
+}
+
+}  // namespace cudabm

@@ -42,7 +42,12 @@ class Reduce1 : public cudabm::BenchmarkBase {
 
     cudaMemcpy(h_res, d_res,  sizeof(T), cudaMemcpyDeviceToHost);
     float sum = cudabm::Sum(h_data, data_size);
-    printf("%f %f\n", h_res[0], sum);
+    printf("11111 %f %f\n", h_res[0], sum);
+    cudaFree(d_data);
+    cudaFree(d_res);
+    cudaFreeHost(h_res);
+    cudaFreeHost(h_data);
+
   }
 
   double dataSize(const bm::State& st) override {

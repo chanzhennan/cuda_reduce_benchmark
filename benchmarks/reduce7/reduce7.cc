@@ -9,20 +9,15 @@
 
 #include "bm_lib/benchmark_base.h"
 #include "bm_lib/utils.h"
-#include "reduce1/reduce1.cuh"
+#include "reduce7/reduce7.cuh"
 
 
 namespace bm = benchmark;
 
-enum class DataType {
-  INT,
-  FLOAT,
-};
-
 template <typename T>
-class Reduce1 : public cudabm::BenchmarkBase {
+class Reduce7 : public cudabm::BenchmarkBase {
  public:
-  Reduce1() : cudabm::BenchmarkBase(/*numIpus=*/1, /*enableMonitor=*/true) {}
+  Reduce7() : cudabm::BenchmarkBase(/*numIpus=*/1, /*enableMonitor=*/true) {}
 
   void callKernel(size_t data_size) {
 
@@ -38,16 +33,15 @@ class Reduce1 : public cudabm::BenchmarkBase {
     // cudabm::Print(h_data, data_size);
 
     cudaMemcpy(d_data, h_data, data_size * sizeof(T), cudaMemcpyHostToDevice);
-    call_reduce1(d_data, d_res, data_size);
+    call_reduce7(d_data, d_res, data_size);
 
     cudaMemcpy(h_res, d_res,  sizeof(T), cudaMemcpyDeviceToHost);
     float sum = cudabm::Sum(h_data, data_size);
-    printf("11111 %f %f\n", h_res[0], sum);
+    printf("777777777 %f %f\n", h_res[0], sum);
     cudaFree(d_data);
     cudaFree(d_res);
     cudaFreeHost(h_res);
     cudaFreeHost(h_data);
-
   }
 
   double dataSize(const bm::State& st) override {
@@ -57,21 +51,20 @@ class Reduce1 : public cudabm::BenchmarkBase {
   }
 };
 
-#define BENCHMARK_REDUCE1_OP(name, dType)                   \
-  BENCHMARK_TEMPLATE_DEFINE_F(Reduce1, name, dType)(bm::State & st) {              \
+#define BENCHMARK_REDUCE7_OP(name, dType)                   \
+  BENCHMARK_TEMPLATE_DEFINE_F(Reduce7, name, dType)(bm::State & st) {              \
     callKernel(st.range(0));                      \
     runBenchmark(st);                                                       \
     st.counters["FLOPS"] = bm::Counter{                                     \
         dataSize(st), bm::Counter::kIsIterationInvariantRate}; \
   }                                                                         \
-  BENCHMARK_REGISTER_F(Reduce1, name)                              \
+  BENCHMARK_REGISTER_F(Reduce7, name)                              \
       ->Unit(bm::kMillisecond)                                              \
       ->RangeMultiplier(2)                                                  \
       ->Range(32, 32);
 
 
-#define BENCHMARK_REDUCE1_OP_TYPE(dType)                    \
-  BENCHMARK_REDUCE1_OP(Reduce_##dType, dType)
+#define BENCHMARK_REDUCE7_OP_TYPE(dType)                    \
+  BENCHMARK_REDUCE7_OP(Reduce_##dType, dType)
 
-BENCHMARK_REDUCE1_OP_TYPE(float)
-// BENCHMARK_REDUCE1_OP_TYPE(int)
+BENCHMARK_REDUCE7_OP_TYPE(float)

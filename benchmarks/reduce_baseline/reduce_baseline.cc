@@ -15,7 +15,6 @@
 
 #define BLOCKSIZE 1024
 
-
 template <typename T>
 class ReduceBaseline : public cudabm::BenchmarkBase {
  public:
@@ -30,13 +29,11 @@ class ReduceBaseline : public cudabm::BenchmarkBase {
     for (size_t i = 0; i < dataSize; i++)
       array[i] = 1;
 
-    cudaMalloc(&d_array, sizeof(T) * dataSize); 
+    cudaMalloc((void**)&d_array, sizeof(T) * dataSize); 
     cudaMemcpy(d_array, array, sizeof(T) * dataSize, cudaMemcpyHostToDevice); 
 
     //call kernel 
-    for (auto _ : state) {
-      result  = GPUReduction<BLOCKSIZE>(d_array, dataSize);
-    }
+    result  = GPUReduction<BLOCKSIZE>(d_array, dataSize);
 
     if (dataSize != (long int)result){
       throw std::invalid_argument("Results are different.");
@@ -59,7 +56,9 @@ class ReduceBaseline : public cudabm::BenchmarkBase {
 
 #define BENCHMARK_REDUCE1_OP(name, dType)                   \
   BENCHMARK_TEMPLATE_DEFINE_F(ReduceBaseline, name, dType)(benchmark::State & st) {              \
+    for (auto _ : st) { \
     callKernel(st);                      \
+    }                                     \
     st.counters["DATASIZE"] = getDataSize();       \
     st.counters["FLOPS"] = benchmark::Counter{                                     \
         getDataSize(), benchmark::Counter::kIsIterationInvariantRate}; \

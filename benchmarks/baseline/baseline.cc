@@ -8,15 +8,15 @@
 #include <stdexcept>
 #include <vector>
 
+#include "baseline/baseline.cuh"
 #include "bm_lib/benchmark_base.h"
 #include "bm_lib/utils.h"
-#include "reduce_baseline/reduce_baseline.cuh"
 
 #define BLOCKSIZE 1024
 
-template <typename T> class ReduceBaseline : public cudabm::BenchmarkBase {
+template <typename T> class Baseline : public cudabm::BenchmarkBase {
 public:
-  ReduceBaseline() : cudabm::BenchmarkBase(/*enableMonitor=*/true) {}
+  Baseline() : cudabm::BenchmarkBase(/*enableMonitor=*/true) {}
 
   void callKernel(benchmark::State &state) {
     dataSize = state.range(0) * state.range(0) * 100;
@@ -51,7 +51,7 @@ private:
 };
 
 #define BENCHMARK_REDUCE1_OP(name, dType)                                      \
-  BENCHMARK_TEMPLATE_DEFINE_F(ReduceBaseline, name, dType)                     \
+  BENCHMARK_TEMPLATE_DEFINE_F(Baseline, name, dType)                           \
   (benchmark::State & st) {                                                    \
     for (auto _ : st) {                                                        \
       callKernel(st);                                                          \
@@ -60,7 +60,7 @@ private:
     st.counters["FLOPS"] = benchmark::Counter{                                 \
         getDataSize(), benchmark::Counter::kIsIterationInvariantRate};         \
   }                                                                            \
-  BENCHMARK_REGISTER_F(ReduceBaseline, name)                                   \
+  BENCHMARK_REGISTER_F(Baseline, name)                                         \
       ->Unit(benchmark::kMillisecond)                                          \
       ->RangeMultiplier(2)                                                     \
       ->Range(1024, 2048);

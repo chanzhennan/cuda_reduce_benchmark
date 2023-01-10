@@ -5,8 +5,8 @@ set(SOURCE_FILES cuda_benchmark.cc)
 list(
   APPEND
   SOURCE_FILES
-  reduce_baseline/reduce_baseline.cc
-  reduce_baseline/reduce_baseline.cu
+  baseline/baseline.cc
+  baseline/baseline.cu
   no_divergence_branch/no_divergence_branch.cc
   no_divergence_branch/no_divergence_branch.cu
   no_bank_conflict/no_bank_conflict.cc

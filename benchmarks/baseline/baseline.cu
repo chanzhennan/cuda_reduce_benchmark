@@ -1,4 +1,4 @@
-#include "reduce_baseline/reduce_baseline.cuh"
+#include "baseline/baseline.cuh"
 
 template <size_t blockSize, typename T>
 __global__ void reducebase(T *g_idata, T *g_odata, size_t size)

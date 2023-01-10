@@ -9,8 +9,13 @@ list(
   reduce_baseline/reduce_baseline.cu
   no_divergence_branch/no_divergence_branch.cc
   no_divergence_branch/no_divergence_branch.cu
-  # reduce3/reduce3.cc reduce3/reduce3.cu reduce4/reduce4.cc reduce4/reduce4.cu
-  # reduce5/reduce5.cc reduce5/reduce5.cu reduce6/reduce6.cc reduce6/reduce6.cu
+  no_bank_conflict/no_bank_conflict.cc
+  no_bank_conflict/no_bank_conflict.cu
+  add_during_load/add_during_load.cc
+  add_during_load/add_during_load.cu
+  # add_during_load/add_during_load.cc add_during_load/add_during_load.cu
+  # reduce4/reduce4.cc reduce4/reduce4.cu reduce5/reduce5.cc reduce5/reduce5.cu
+  # reduce6/reduce6.cc reduce6/reduce6.cu
 )
 
 cuda_add_executable(cuda_benchmark ${SOURCE_FILES})

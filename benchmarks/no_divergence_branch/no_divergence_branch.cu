@@ -60,8 +60,8 @@ T GPUReduction2(T* dA, size_t N)
        if(totalBlocks == 1) break;
        size = totalBlocks;
        totalBlocks = ceil((double)totalBlocks/threadsPerBlock);
-
      }
+     cudaDeviceSynchronize();
 
      T tot = 0.;
 

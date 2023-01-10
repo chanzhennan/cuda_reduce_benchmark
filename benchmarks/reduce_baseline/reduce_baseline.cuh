@@ -5,4 +5,3 @@
 
 template <size_t blockSize, typename T>
 T GPUReduction(T *dA, size_t N);
-

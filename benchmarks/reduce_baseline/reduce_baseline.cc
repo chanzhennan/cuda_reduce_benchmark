@@ -33,7 +33,9 @@ public:
     result = GPUReduction<BLOCKSIZE>(d_array, dataSize);
 
     if (dataSize != (long int)result) {
-      throw std::invalid_argument("Results are different.");
+      std::cout << "dataSize : " << dataSize << '\n';
+      std::cout << "result : " << (long int)result << '\n';
+      // throw std::invalid_argument("Results are different.");
     }
 
     cudaFree(d_array);

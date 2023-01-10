@@ -10,13 +10,13 @@
 
 #include "bm_lib/benchmark_base.h"
 #include "bm_lib/utils.h"
-#include "no_divergence_branch/no_divergence_branch.cuh"
+#include "no_bank_conflict/no_bank_conflict.cuh"
 
 #define BLOCKSIZE 1024
 
-template <typename T> class NoDivergenceBranch : public cudabm::BenchmarkBase {
+template <typename T> class NoBankConflict : public cudabm::BenchmarkBase {
 public:
-  NoDivergenceBranch() : cudabm::BenchmarkBase(/*enableMonitor=*/true) {}
+  NoBankConflict() : cudabm::BenchmarkBase(/*enableMonitor=*/true) {}
 
   void callKernel(benchmark::State &state) {
     dataSize = state.range(0) * state.range(0) * 100;
@@ -30,7 +30,7 @@ public:
     cudaMemcpy(d_array, array, sizeof(T) * dataSize, cudaMemcpyHostToDevice);
 
     // call kernel
-    result = GPUReduction2<BLOCKSIZE>(d_array, dataSize);
+    result = GPUReduction3<BLOCKSIZE>(d_array, dataSize);
 
     if (dataSize != (long int)result) {
       std::cout << "dataSize : " << dataSize << '\n';
@@ -50,8 +50,8 @@ private:
   long int dataSize;
 };
 
-#define BENCHMARK_REDUCE2_OP(name, dType)                                      \
-  BENCHMARK_TEMPLATE_DEFINE_F(NoDivergenceBranch, name, dType)                 \
+#define BENCHMARK_REDUCE3_OP(name, dType)                                      \
+  BENCHMARK_TEMPLATE_DEFINE_F(NoBankConflict, name, dType)                     \
   (benchmark::State & st) {                                                    \
     for (auto _ : st) {                                                        \
       callKernel(st);                                                          \
@@ -60,13 +60,13 @@ private:
     st.counters["FLOPS"] = benchmark::Counter{                                 \
         getDataSize(), benchmark::Counter::kIsIterationInvariantRate};         \
   }                                                                            \
-  BENCHMARK_REGISTER_F(NoDivergenceBranch, name)                               \
+  BENCHMARK_REGISTER_F(NoBankConflict, name)                                   \
       ->Unit(benchmark::kMillisecond)                                          \
       ->RangeMultiplier(2)                                                     \
       ->Range(1024, 2048);
 
-#define BENCHMARK_REDUCE2_OP_TYPE(dType)                                       \
-  BENCHMARK_REDUCE2_OP(Reduce_##dType, dType)
+#define BENCHMARK_REDUCE3_OP_TYPE(dType)                                       \
+  BENCHMARK_REDUCE3_OP(Reduce_##dType, dType)
 
-BENCHMARK_REDUCE2_OP_TYPE(float)
-BENCHMARK_REDUCE2_OP_TYPE(int)
+BENCHMARK_REDUCE3_OP_TYPE(float)
+BENCHMARK_REDUCE3_OP_TYPE(int)

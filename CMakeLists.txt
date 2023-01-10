@@ -22,7 +22,6 @@ option(USE_SYSTEM_LIBS "use system libs or not" OFF)
 # Find cuda SDK
 find_package(CUDA REQUIRED)
 
-
 if(USE_SYSTEM_LIBS)
   find_package(GTest REQUIRED)
   find_package(benchmark REQUIRED)
@@ -51,7 +50,7 @@ else()
   set(HAVE_GNU_POSIX_REGEX OFF)
   set(BENCHMARK_INSTALL_DOCS OFF)
   FetchContent_MakeAvailable(googlebenchmark)
-FetchContent_GetProperties(googlebenchmark)
+  FetchContent_GetProperties(googlebenchmark)
 
 endif()
 

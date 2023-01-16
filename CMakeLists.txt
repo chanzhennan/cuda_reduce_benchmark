@@ -31,7 +31,7 @@ else()
   # googletest
   FetchContent_Declare(
     googletest
-    GIT_REPOSITORY git@github.com:google/googletest.git
+    GIT_REPOSITORY https://github.com/google/googletest.git
     GIT_TAG release-1.11.0
     GIT_SHALLOW TRUE)
   # https://cmake.org/cmake/help/latest/policy/CMP0077.html
@@ -42,7 +42,7 @@ else()
 
   FetchContent_Declare(
     googlebenchmark
-    GIT_REPOSITORY git@github.com:google/benchmark.git
+    GIT_REPOSITORY https://github.com/google/benchmark.git
     GIT_TAG v1.6.2
     GIT_SHALLOW TRUE)
   set(BENCHMARK_ENABLE_TESTING OFF)

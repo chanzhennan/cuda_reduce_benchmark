@@ -2,15 +2,10 @@
 #pragma once
 
 #include <benchmark/benchmark.h>
-// #include <graphcore_target_access/gcipuinfo/IPUAttributeLabels.h>
-// #include <graphcore_target_access/gcipuinfo/gcipuinfo.h>
 #include <unistd.h>
 
 #include <deque>
 #include <memory>
-// #include <poplar/DeviceManager.hpp>
-// #include <poplar/Engine.hpp>
-// #include <poplar/Graph.hpp>
 #include <stdexcept>
 #include <thread>
 
@@ -67,21 +62,7 @@ class BenchmarkBase : public benchmark::Fixture {
   // monitor thread function
   void monitorFunc();
 
-  // void startMonitor() {
-  //   shutDownMonitor_ = false;
-  //   monitorThread_ = std::thread(&BenchmarkBase::monitorFunc, this);
-  // }
-
-  // void stopMonitor() {
-  //   if (enableMonitor_) {
-  //     shutDownMonitor_ = true;
-  //     monitorThread_.join();
-  //   }
-  // }
-
   void runBenchmark(benchmark::State &state);
-
-  // void detachDevice(poplar::Device &device);
 
   void releaseEngine();
 

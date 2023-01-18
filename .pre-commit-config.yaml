@@ -20,6 +20,7 @@ repos:
     hooks:
       - id: clang-format
         args: ["--style=Google", "-i"]
+        types_or: [c++, c, c#, cuda, json, objective-c, proto]
       # - id: clang-tidy
       # - id: oclint
       # - id: uncrustify

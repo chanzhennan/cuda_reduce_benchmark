@@ -2,16 +2,18 @@
 
 
 template <size_t blockSize, typename T>
-__global__ void reducebase(T *g_idata, T *g_odata, size_t size)
+__global__ void reducebase3(T *g_idata, T *g_odata, size_t size)
 {
  __shared__ T sdata[blockSize];
 
     // each thread loads one element from global to shared mem
     unsigned int tid = threadIdx.x;
     unsigned int i = blockIdx.x*blockDim.x + threadIdx.x;
+    sdata[tid] = 0;
+
+    if(i<size)
     sdata[tid] = g_idata[i];
     __syncthreads();
-
     // do reduction in shared mem
     for (unsigned int s=blockDim.x/2; s>0; s>>=1) {
         if (tid < s) {
@@ -47,11 +49,11 @@ T GPUReduction3(T* dA, size_t N)
    {
       if (turn)
       {
-         reducebase<blockSize><<<totalBlocks, threadsPerBlock>>>(dA, output, size);
+         reducebase3<blockSize><<<totalBlocks, threadsPerBlock>>>(dA, output, size);
          turn = false;
        }
        else{
-         reducebase<blockSize><<<totalBlocks, threadsPerBlock>>>(output, dA, size);
+         reducebase3<blockSize><<<totalBlocks, threadsPerBlock>>>(output, dA, size);
          turn = true;
        }
 

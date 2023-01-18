@@ -1,7 +1,7 @@
 #include "baseline/baseline.cuh"
 
 template <size_t blockSize, typename T>
-__global__ void reducebase(T *g_idata, T *g_odata, size_t size)
+__global__ void reducebase1(T *g_idata, T *g_odata, size_t size)
 {
   __shared__ T sdata[blockSize];
   unsigned int tid = threadIdx.x;
@@ -17,6 +17,8 @@ __global__ void reducebase(T *g_idata, T *g_odata, size_t size)
       }
       __syncthreads();
     }
+      __syncthreads();
+
 
    if (tid == 0) g_odata[blockIdx.x] = sdata[0];
 
@@ -31,7 +33,6 @@ template<size_t blockSize, typename T>
 T GPUReduction(T* dA, size_t N)
 {
    int size = N;
-   // thrust::host_vector<int> data_h_i(size, 1);
 
    int threadsPerBlock = 256;
    int totalBlocks = (size + (threadsPerBlock - 1)) / threadsPerBlock;
@@ -41,30 +42,27 @@ T GPUReduction(T* dA, size_t N)
 
    bool turn = true;
 
+
    while (true)
    {
       if (turn)
       {
-         reducebase<blockSize><<<totalBlocks, threadsPerBlock>>>(dA, output, size);
-   cudaDeviceSynchronize();
-
+         reducebase1<blockSize><<<totalBlocks, threadsPerBlock>>>(dA, output, size);
          turn = false;
+
        }
        else{
-         reducebase<blockSize><<<totalBlocks, threadsPerBlock>>>(output, dA, size);
-   cudaDeviceSynchronize();
-
+         reducebase1<blockSize><<<totalBlocks, threadsPerBlock>>>(output, dA, size);
          turn = true;
+
        }
 
        if(totalBlocks == 1) break;
        size = totalBlocks;
        totalBlocks = ceil((double)totalBlocks/threadsPerBlock);
-
      }
 
      T tot = 0.;
-
      if(turn)
      {
        cudaMemcpy(&tot, dA, sizeof(T), cudaMemcpyDeviceToHost);
@@ -74,7 +72,6 @@ T GPUReduction(T* dA, size_t N)
        cudaMemcpy(&tot, output, sizeof(T), cudaMemcpyDeviceToHost);
      }
      cudaFree(output);
-     //  std::cout << tot << std::endl;
 
      return tot;
 

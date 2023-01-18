@@ -20,6 +20,10 @@ public:
 
   void callKernel(benchmark::State &state) {
     dataSize = state.range(0) * state.range(0) * 100;
+    // dataSize = state.range(0) * 256;
+    // std::cout << "dataSize111 : " << dataSize << '\n';
+
+
     // Populate array
 
     cudaMallocHost(&array, sizeof(T) * dataSize);

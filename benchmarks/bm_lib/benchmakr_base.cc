@@ -4,11 +4,12 @@
 
 // #include <poplar/IPUModel.hpp>
 
-#include "utils.h"
 #include <iostream>
+
+#include "utils.h"
 namespace cudabm {
 
-void BenchmarkBase::engineRun() { return;/*engine_->run(0);*/ }
+void BenchmarkBase::engineRun() { return; /*engine_->run(0);*/ }
 
 // void BenchmarkBase::detachDevice(poplar::Device& device) {
 //   if (device.getTarget().getTargetType() == poplar::TargetType::IPU_MODEL) {
@@ -61,7 +62,6 @@ void BenchmarkBase::runBenchmark(benchmark::State& state) {
   //   stopMonitor();
   // }
 
-
   // if (enableMonitor_) {
   //   for (int i = 0; i < monitorQueue_.size(); i++) {
   //     state.counters[cudabm::strFormat("power_%d", i)] =
@@ -70,4 +70,4 @@ void BenchmarkBase::runBenchmark(benchmark::State& state) {
   // }
 }
 
-}  // namespace ipubm
+}  // namespace cudabm

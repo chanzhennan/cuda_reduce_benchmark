@@ -17,7 +17,7 @@
 namespace std {
 
 template <typename T, typename... Args>
-std::unique_ptr<T> make_unique(Args &&...args) {
+std::unique_ptr<T> make_unique(Args &&... args) {
   return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
 }
 
@@ -90,7 +90,6 @@ class BenchmarkBase : public benchmark::Fixture {
   std::deque<MonitorItems> monitorQueue_;
   size_t monitorQueueMaxLen_;
   std::thread monitorThread_;
-
 };
 
-}  // namespace ipubm
+}  // namespace cudabm

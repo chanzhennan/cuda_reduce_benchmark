@@ -13,7 +13,8 @@ list(
   no_bank_conflict/no_bank_conflict.cu
   add_during_load/add_during_load.cc
   add_during_load/add_during_load.cu
-  # unroll_last_warp/unroll_last_warp.cc unroll_last_warp/unroll_last_warp.cu
+  unroll_last_warp/unroll_last_warp.cc
+  unroll_last_warp/unroll_last_warp.cu
   # completely_unroll/completely_unroll.cc
   # completely_unroll/completely_unroll.cu
 )

@@ -9,7 +9,19 @@ __global__ void reducebase4(T *g_idata, T *g_odata, size_t size) {
   unsigned int i = blockIdx.x * (blockDim.x * 2) + threadIdx.x;
   sdata[tid] = 0;
 
-  if (i < size) sdata[tid] = g_idata[i] + g_idata[i + blockDim.x];
+  /* checkout this case
+   *                                       size = 1600
+   *   reduce [-----------------------------------]
+   *                                              |
+   *           256         256        256         |    threadMax = 2048
+   *   thread [------_____------_____------_____------_____]
+   *                                            ##|
+   *                                            ##|
+   *          this section should not add 'g_idata[i + blockDim.x]'
+   */
+  T adder = i + blockDim.x < size ? g_idata[i + blockDim.x] : 0;
+
+  if (i < size) sdata[tid] = g_idata[i] + adder;
   __syncthreads();
 
   // do reduction in shared mem
@@ -41,6 +53,8 @@ T GPUReduction4(T *dA, size_t N) {
 
   bool turn = true;
 
+  T *tmp;
+  cudaMallocHost((void **)&tmp, sizeof(T) * totalBlocks);
   while (true) {
     if (turn) {
       reducebase4<blockSize>
@@ -51,7 +65,6 @@ T GPUReduction4(T *dA, size_t N) {
           <<<totalBlocks, threadsPerBlock>>>(output, dA, size);
       turn = true;
     }
-
     if (totalBlocks == 1) break;
     size = totalBlocks;
     totalBlocks = ceil((double)totalBlocks / (2 * threadsPerBlock));
@@ -66,7 +79,6 @@ T GPUReduction4(T *dA, size_t N) {
     cudaMemcpy(&tot, output, sizeof(T), cudaMemcpyDeviceToHost);
   }
   cudaFree(output);
-  //  std::cout << tot << std::endl;
 
   return tot;
 }

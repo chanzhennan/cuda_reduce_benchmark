@@ -17,8 +17,8 @@ list(
   unroll_last_warp/unroll_last_warp.cu
   completely_unroll/completely_unroll.cc
   completely_unroll/completely_unroll.cu
-  # multi_add/multi_add.cc multi_add/multi_add.cu
-)
+  shuffle/shuffle.cc
+  shuffle/shuffle.cu)
 
 cuda_add_executable(cuda_benchmark ${SOURCE_FILES})
 target_link_libraries(cuda_benchmark bm_lib)

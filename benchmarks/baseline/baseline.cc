@@ -13,8 +13,6 @@
 #include "bm_lib/benchmark_base.h"
 #include "bm_lib/utils.h"
 
-#define BLOCKSIZE 1024
-
 template <typename T>
 class Baseline : public cudabm::BenchmarkBase {
  public:
@@ -34,7 +32,7 @@ class Baseline : public cudabm::BenchmarkBase {
     cudaMemcpy(d_array, array, sizeof(T) * dataSize, cudaMemcpyHostToDevice);
 
     // call kernel
-    result = GPUReduction<BLOCKSIZE>(d_array, dataSize);
+    result = GPUReduction<TPB>(d_array, dataSize);
 
     if (dataSize != (long int)result) {
       std::cout << "dataSize : " << dataSize << '\n';

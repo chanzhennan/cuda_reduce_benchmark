@@ -68,7 +68,7 @@ T GPUReduction6(T *dA, size_t N) {
   int size = N;
   // thrust::host_vector<int> data_h_i(size, 1);
 
-  int threadsPerBlock = 256;
+  int threadsPerBlock = TPB;
   int totalBlocks = (size + (threadsPerBlock - 1)) / (2 * threadsPerBlock);
 
   T *output;
@@ -105,5 +105,5 @@ T GPUReduction6(T *dA, size_t N) {
   return tot;
 }
 
-template float GPUReduction6<1024, float>(float *dA, size_t N);
-template int GPUReduction6<1024, int>(int *dA, size_t N);
+template float GPUReduction6<TPB, float>(float *dA, size_t N);
+template int GPUReduction6<TPB, int>(int *dA, size_t N);

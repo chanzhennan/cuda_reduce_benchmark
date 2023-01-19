@@ -32,8 +32,7 @@ T GPUReduction3(T *dA, size_t N) {
   int size = N;
   // thrust::host_vector<int> data_h_i(size, 1);
 
-  int threadsPerBlock = 256;
-  int totalBlocks = (size + (threadsPerBlock - 1)) / threadsPerBlock;
+  int totalBlocks = (size + (TPB - 1)) / TPB;
 
   T *output;
   cudaMalloc((void **)&output, sizeof(T) * totalBlocks);
@@ -42,18 +41,16 @@ T GPUReduction3(T *dA, size_t N) {
 
   while (true) {
     if (turn) {
-      reducebase3<blockSize>
-          <<<totalBlocks, threadsPerBlock>>>(dA, output, size);
+      reducebase3<blockSize><<<totalBlocks, TPB>>>(dA, output, size);
       turn = false;
     } else {
-      reducebase3<blockSize>
-          <<<totalBlocks, threadsPerBlock>>>(output, dA, size);
+      reducebase3<blockSize><<<totalBlocks, TPB>>>(output, dA, size);
       turn = true;
     }
 
     if (totalBlocks == 1) break;
     size = totalBlocks;
-    totalBlocks = ceil((double)totalBlocks / threadsPerBlock);
+    totalBlocks = ceil((double)totalBlocks / TPB);
   }
   cudaDeviceSynchronize();
 
@@ -70,5 +67,5 @@ T GPUReduction3(T *dA, size_t N) {
   return tot;
 }
 
-template float GPUReduction3<1024, float>(float *dA, size_t N);
-template int GPUReduction3<1024, int>(int *dA, size_t N);
+template float GPUReduction3<TPB, float>(float *dA, size_t N);
+template int GPUReduction3<TPB, int>(int *dA, size_t N);

@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Graphcore Ltd. All rights reserved.
+// Copyright (c) 2022 Zhennanc Ltd. All rights reserved.
 #include "baseline/baseline.cuh"
 
 #include <benchmark/benchmark.h>

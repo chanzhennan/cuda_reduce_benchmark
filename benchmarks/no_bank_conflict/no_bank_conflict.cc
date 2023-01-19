@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Graphcore Ltd. All rights reserved.
+// Copyright (c) 2022 Zhennanc Ltd. All rights reserved.
 #include "no_bank_conflict/no_bank_conflict.cuh"
 
 #include <benchmark/benchmark.h>

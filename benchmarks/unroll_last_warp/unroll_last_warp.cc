@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Graphcore Ltd. All rights reserved.
+// Copyright (c) 2022 Zhennanc Ltd. All rights reserved.
 #include "unroll_last_warp/unroll_last_warp.cuh"
 
 #include <benchmark/benchmark.h>

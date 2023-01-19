@@ -1,4 +1,4 @@
-#include "no_divergence_branch/no_divergence_branch.cuh"
+#include "no_bank_conflict/no_bank_conflict.cuh"
 
 template <size_t blockSize, typename T>
 __global__ void reducebase3(T *g_idata, T *g_odata, size_t size) {

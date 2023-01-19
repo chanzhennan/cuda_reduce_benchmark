@@ -1,4 +1,4 @@
-#include "no_divergence_branch/no_divergence_branch.cuh"
+#include "completely_unroll/completely_unroll.cuh"
 
 template <unsigned int blockSize, typename T>
 __device__ void warpReduce6(volatile T *cache, unsigned int tid) {

@@ -22,8 +22,7 @@ __global__ void reducebase7(T *g_idata, T *g_odata, size_t size) {
   // each thread loads one element from global to shared mem
   unsigned int tid = threadIdx.x;
   unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
-
-  T sum = g_idata[i];
+  T sum = i < size ? g_idata[i] : 0;
   __syncthreads();
 
   // Shared mem for partial sums (one per warp in the block)
@@ -40,6 +39,7 @@ __global__ void reducebase7(T *g_idata, T *g_odata, size_t size) {
   sum = (threadIdx.x < blockDim.x / WARP_SIZE) ? warpLevelSums[laneId] : 0;
   // Final reduce using first warp
   if (warpId == 0) sum = warpReduceSum<blockSize / WARP_SIZE>(sum);
+
   // write result for this block to global mem
   if (tid == 0) g_odata[blockIdx.x] = sum;
 }
@@ -51,15 +51,17 @@ __global__ void reducebase7(T *g_idata, T *g_odata, size_t size) {
 template <size_t blockSize, typename T>
 T GPUReduction7(T *dA, size_t N) {
   int size = N;
-  // thrust::host_vector<int> data_h_i(size, 1);
 
   int totalBlocks = (size + (TPB - 1)) / (TPB);
 
   T *output;
   cudaMalloc((void **)&output, sizeof(T) * totalBlocks);
 
-  bool turn = true;
+  T *tmp;
+  cudaMallocHost((void **)&tmp, sizeof(T) * totalBlocks);
 
+  bool turn = true;
+  int iter = 0;
   while (true) {
     if (turn) {
       reducebase7<blockSize><<<totalBlocks, TPB>>>(dA, output, size);
@@ -72,6 +74,7 @@ T GPUReduction7(T *dA, size_t N) {
     if (totalBlocks == 1) break;
     size = totalBlocks;
     totalBlocks = ceil((double)totalBlocks / (TPB));
+    iter++;
   }
   cudaDeviceSynchronize();
 

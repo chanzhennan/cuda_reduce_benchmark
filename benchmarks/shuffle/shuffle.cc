@@ -10,24 +10,13 @@
 #include <stdexcept>
 #include <vector>
 
-#include "bm_lib/benchmark_base.h"
 #include "bm_lib/utils.h"
 
 template <typename T>
-class Shuffle : public cudabm::BenchmarkBase {
+class Shuffle : public benchmark::Fixture {
  public:
-  Shuffle() : cudabm::BenchmarkBase(/*enableMonitor=*/true) {}
-
   void callKernel(benchmark::State &state) {
-    dataSize = state.range(0) * state.range(0) * 32;
-    // Populate array
-
-    cudaMallocHost(&array, sizeof(T) * dataSize);
-    for (size_t i = 0; i < dataSize; i++) array[i] = 1;
-
-    cudaMalloc((void **)&d_array, sizeof(T) * dataSize);
     cudaMemcpy(d_array, array, sizeof(T) * dataSize, cudaMemcpyHostToDevice);
-
     // call kernel
     result = GPUReduction7<TPB>(d_array, dataSize);
 
@@ -36,12 +25,23 @@ class Shuffle : public cudabm::BenchmarkBase {
       std::cout << "result : " << (long int)result << '\n';
       // throw std::invalid_argument("Results are different.");
     }
+  }
 
+  void SetUp(const ::benchmark::State &state) BENCHMARK_OVERRIDE {
+    dataSize = state.range(0) * state.range(0) * 100;
+    // Populate array
+    cudaMallocHost(&array, sizeof(T) * dataSize);
+    for (size_t i = 0; i < dataSize; i++) array[i] = 1;
+
+    cudaMalloc((void **)&d_array, sizeof(T) * dataSize);
+  }
+
+  void TearDown(const ::benchmark::State &st) BENCHMARK_OVERRIDE {
     cudaFree(d_array);
     cudaFreeHost(array);
   }
 
-  double getDataSize() override { return (double)dataSize; }
+  double getDataSize() { return (double)dataSize; }
 
  private:
   T *d_array, *array;

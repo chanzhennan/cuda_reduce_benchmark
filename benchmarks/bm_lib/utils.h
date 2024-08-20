@@ -1,4 +1,6 @@
 // Copyright (c) 2022 Zhennanc Ltd. All rights reserved.
+#include <cuda_runtime.h>
+
 #include <string>
 #include <vector>
 

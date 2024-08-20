@@ -1,4 +1,4 @@
-#include "no_divergence_branch/no_divergence_branch.cuh"
+#include "ReduceArray1/no_divergence_branch.cuh"
 
 template <size_t blockSize, typename T>
 __global__ void reducebase2(T *g_idata, T *g_odata, size_t size) {

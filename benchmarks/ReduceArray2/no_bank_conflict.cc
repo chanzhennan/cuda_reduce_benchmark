@@ -20,7 +20,7 @@ class NoBankConflict : public BaseReduce<T> {
     BaseReduce<T>::shuffle(state);
 
     auto len = BaseReduce<T>::getDataSize(state);
-    auto result = GPUReduction3<TPB>(BaseReduce<T>::getDeviceArray(), len);
+    auto result = GPUReduction2<TPB>(BaseReduce<T>::getDeviceArray(), len);
 
     if (len != (long int)result) {
       std::cout << "dataSize : " << len << '\n';

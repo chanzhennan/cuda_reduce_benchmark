@@ -15,8 +15,9 @@ list(
   ReduceArray3/add_during_load.cu
   ReduceArray4/unroll_last_warp.cc
   ReduceArray4/unroll_last_warp.cu
-  # completely_unroll/completely_unroll.cc
-  # completely_unroll/completely_unroll.cu shuffle/shuffle.cc shuffle/shuffle.cu
+  ReduceArray5/completely_unroll.cc
+  ReduceArray5/completely_unroll.cu
+  # shuffle/shuffle.cc shuffle/shuffle.cu
 )
 
 cuda_add_executable(cuda_benchmark ${SOURCE_FILES})

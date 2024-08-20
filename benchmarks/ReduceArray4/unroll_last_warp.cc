@@ -20,7 +20,7 @@ class UnrollLastWarp : public BaseReduce<T> {
     BaseReduce<T>::shuffle(state);
 
     auto len = BaseReduce<T>::getDataSize(state);
-    auto result = GPUReduction5<TPB>(BaseReduce<T>::getDeviceArray(), len);
+    auto result = GPUReduction4<TPB>(BaseReduce<T>::getDeviceArray(), len);
 
     if (len != (long int)result) {
       std::cout << "dataSize : " << len << '\n';

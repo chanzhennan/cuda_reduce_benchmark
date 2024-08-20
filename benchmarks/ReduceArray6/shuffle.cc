@@ -1,5 +1,5 @@
 // Copyright (c) 2022 Zhennanc Ltd. All rights reserved.
-#include "ReduceArray3/add_during_load.cuh"
+#include "ReduceArray6/shuffle.cuh"
 
 #include <benchmark/benchmark.h>
 
@@ -14,13 +14,13 @@
 #include "bm_lib/utils.h"
 
 template <typename T>
-class AddDuringLoad : public BaseReduce<T> {
+class Shuffle : public BaseReduce<T> {
  public:
   void callKernel(benchmark::State &state) {
     BaseReduce<T>::shuffle(state);
 
     auto len = BaseReduce<T>::getDataSize(state);
-    auto result = GPUReduction3<TPB>(BaseReduce<T>::getDeviceArray(), len);
+    auto result = GPUReduction6<TPB>(BaseReduce<T>::getDeviceArray(), len);
 
     if (len != (long int)result) {
       std::cout << "dataSize : " << len << '\n';
@@ -30,8 +30,8 @@ class AddDuringLoad : public BaseReduce<T> {
   }
 };
 
-#define BENCHMARK_REDUCE3_OP(name, dType)                              \
-  BENCHMARK_TEMPLATE_DEFINE_F(AddDuringLoad, name, dType)              \
+#define BENCHMARK_REDUCE6_OP(name, dType)                              \
+  BENCHMARK_TEMPLATE_DEFINE_F(Shuffle, name, dType)                    \
   (benchmark::State & st) {                                            \
     for (auto _ : st) {                                                \
       callKernel(st);                                                  \
@@ -41,13 +41,13 @@ class AddDuringLoad : public BaseReduce<T> {
     st.counters["TFlops"] = benchmark::Counter(                        \
         (getDataSize(st) * iter / 1e12), benchmark::Counter::kIsRate); \
   }                                                                    \
-  BENCHMARK_REGISTER_F(AddDuringLoad, name)                            \
+  BENCHMARK_REGISTER_F(Shuffle, name)                                  \
       ->Unit(benchmark::kMillisecond)                                  \
       ->RangeMultiplier(2)                                             \
       ->Range(1024, 2048);
 
-#define BENCHMARK_REDUCE3_OP_TYPE(dType) \
-  BENCHMARK_REDUCE3_OP(Reduce_##dType, dType)
+#define BENCHMARK_REDUCE6_OP_TYPE(dType) \
+  BENCHMARK_REDUCE6_OP(Reduce_##dType, dType)
 
-BENCHMARK_REDUCE3_OP_TYPE(float)
-BENCHMARK_REDUCE3_OP_TYPE(int)
+BENCHMARK_REDUCE6_OP_TYPE(float)
+// BENCHMARK_REDUCE6_OP_TYPE(int)

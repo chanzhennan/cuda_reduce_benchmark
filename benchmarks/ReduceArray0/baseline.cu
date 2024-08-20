@@ -1,7 +1,7 @@
 #include "ReduceArray0/baseline.cuh"
 
 template <size_t blockSize, typename T>
-__global__ void reducebase1(T *g_idata, T *g_odata, size_t size) {
+__global__ void reducebase0(T *g_idata, T *g_odata, size_t size) {
   __shared__ T sdata[blockSize];
   unsigned int tid = threadIdx.x;
   unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -36,11 +36,11 @@ T GPUReduction(T *dA, size_t N) {
 
   while (true) {
     if (turn) {
-      reducebase1<blockSize><<<totalBlocks, TPB>>>(dA, output, size);
+      reducebase0<blockSize><<<totalBlocks, TPB>>>(dA, output, size);
       turn = false;
 
     } else {
-      reducebase1<blockSize><<<totalBlocks, TPB>>>(output, dA, size);
+      reducebase0<blockSize><<<totalBlocks, TPB>>>(output, dA, size);
       turn = true;
     }
 

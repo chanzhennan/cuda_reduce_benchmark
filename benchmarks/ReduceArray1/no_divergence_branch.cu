@@ -1,7 +1,7 @@
 #include "ReduceArray1/no_divergence_branch.cuh"
 
 template <size_t blockSize, typename T>
-__global__ void reducebase2(T *g_idata, T *g_odata, size_t size) {
+__global__ void reducebase1(T *g_idata, T *g_odata, size_t size) {
   __shared__ float sdata[blockSize];
 
   // each thread loads one element from global to shared mem
@@ -30,7 +30,7 @@ __global__ void reducebase2(T *g_idata, T *g_odata, size_t size) {
 // N <= len(dA) is a power of two (N >= BLOCKSIZE)
 // POST: the sum of the first N elements of dA is returned
 template <size_t blockSize, typename T>
-T GPUReduction2(T *dA, size_t N) {
+T GPUReduction1(T *dA, size_t N) {
   int size = N;
   // thrust::host_vector<int> data_h_i(size, 1);
 
@@ -43,10 +43,10 @@ T GPUReduction2(T *dA, size_t N) {
 
   while (true) {
     if (turn) {
-      reducebase2<blockSize><<<totalBlocks, TPB>>>(dA, output, size);
+      reducebase1<blockSize><<<totalBlocks, TPB>>>(dA, output, size);
       turn = false;
     } else {
-      reducebase2<blockSize><<<totalBlocks, TPB>>>(output, dA, size);
+      reducebase1<blockSize><<<totalBlocks, TPB>>>(output, dA, size);
       turn = true;
     }
 
@@ -69,5 +69,5 @@ T GPUReduction2(T *dA, size_t N) {
   return tot;
 }
 
-template float GPUReduction2<TPB, float>(float *dA, size_t N);
-template int GPUReduction2<TPB, int>(int *dA, size_t N);
+template float GPUReduction1<TPB, float>(float *dA, size_t N);
+template int GPUReduction1<TPB, int>(int *dA, size_t N);

@@ -5,4 +5,4 @@
 #define TPB 128
 
 template <size_t blockSize, typename T>
-T GPUReduction4(T *dA, size_t N);
+T GPUReduction3(T *dA, size_t N);

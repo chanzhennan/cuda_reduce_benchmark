@@ -1,4 +1,4 @@
-#include "shuffle/shuffle.cuh"
+#include "ReduceArray6/shuffle.cuh"
 
 #define WARP_SIZE 32
 
@@ -18,7 +18,7 @@ __device__ __forceinline__ T warpReduceSum(T sum) {
 }
 
 template <size_t blockSize, typename T>
-__global__ void reducebase7(T *g_idata, T *g_odata, size_t size) {
+__global__ void reducebase6(T *g_idata, T *g_odata, size_t size) {
   // each thread loads one element from global to shared mem
   unsigned int tid = threadIdx.x;
   unsigned int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -49,7 +49,7 @@ __global__ void reducebase7(T *g_idata, T *g_odata, size_t size) {
 // N <= len(dA) is a power of two (N >= BLOCKSIZE)
 // POST: the sum of the first N elements of dA is returned
 template <size_t blockSize, typename T>
-T GPUReduction7(T *dA, size_t N) {
+T GPUReduction6(T *dA, size_t N) {
   int size = N;
 
   int totalBlocks = (size + (TPB - 1)) / (TPB);
@@ -64,10 +64,10 @@ T GPUReduction7(T *dA, size_t N) {
   int iter = 0;
   while (true) {
     if (turn) {
-      reducebase7<blockSize><<<totalBlocks, TPB>>>(dA, output, size);
+      reducebase6<blockSize><<<totalBlocks, TPB>>>(dA, output, size);
       turn = false;
     } else {
-      reducebase7<blockSize><<<totalBlocks, TPB>>>(output, dA, size);
+      reducebase6<blockSize><<<totalBlocks, TPB>>>(output, dA, size);
       turn = true;
     }
 
@@ -90,5 +90,5 @@ T GPUReduction7(T *dA, size_t N) {
   return tot;
 }
 
-template float GPUReduction7<TPB, float>(float *dA, size_t N);
-template int GPUReduction7<TPB, int>(int *dA, size_t N);
+template float GPUReduction6<TPB, float>(float *dA, size_t N);
+template int GPUReduction6<TPB, int>(int *dA, size_t N);

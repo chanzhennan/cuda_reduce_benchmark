@@ -1,4 +1,4 @@
-#include "completely_unroll/completely_unroll.cuh"
+#include "ReduceArray5/completely_unroll.cuh"
 
 template <unsigned int blockSize, typename T>
 __device__ void warpReduce6(volatile T *cache, unsigned int tid) {
@@ -11,7 +11,7 @@ __device__ void warpReduce6(volatile T *cache, unsigned int tid) {
 }
 
 template <size_t blockSize, typename T>
-__global__ void reducebase6(T *g_idata, T *g_odata, size_t size) {
+__global__ void reducebase5(T *g_idata, T *g_odata, size_t size) {
   __shared__ float sdata[blockSize];
 
   // each thread loads one element from global to shared mem
@@ -64,7 +64,7 @@ __global__ void reducebase6(T *g_idata, T *g_odata, size_t size) {
 // N <= len(dA) is a power of two (N >= BLOCKSIZE)
 // POST: the sum of the first N elements of dA is returned
 template <size_t blockSize, typename T>
-T GPUReduction6(T *dA, size_t N) {
+T GPUReduction5(T *dA, size_t N) {
   int size = N;
   // thrust::host_vector<int> data_h_i(size, 1);
 
@@ -78,11 +78,11 @@ T GPUReduction6(T *dA, size_t N) {
 
   while (true) {
     if (turn) {
-      reducebase6<blockSize>
+      reducebase5<blockSize>
           <<<totalBlocks, threadsPerBlock>>>(dA, output, size);
       turn = false;
     } else {
-      reducebase6<blockSize>
+      reducebase5<blockSize>
           <<<totalBlocks, threadsPerBlock>>>(output, dA, size);
       turn = true;
     }
@@ -105,5 +105,5 @@ T GPUReduction6(T *dA, size_t N) {
   return tot;
 }
 
-template float GPUReduction6<TPB, float>(float *dA, size_t N);
-template int GPUReduction6<TPB, int>(int *dA, size_t N);
+template float GPUReduction5<TPB, float>(float *dA, size_t N);
+template int GPUReduction5<TPB, int>(int *dA, size_t N);

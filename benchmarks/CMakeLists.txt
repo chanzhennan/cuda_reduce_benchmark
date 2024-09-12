@@ -17,8 +17,8 @@ list(
   ReduceArray4/unroll_last_warp.cu
   ReduceArray5/completely_unroll.cc
   ReduceArray5/completely_unroll.cu
-  # shuffle/shuffle.cc shuffle/shuffle.cu
-)
+  ReduceArray6/shuffle.cc
+  ReduceArray6/shuffle.cu)
 
 cuda_add_executable(cuda_benchmark ${SOURCE_FILES})
 target_link_libraries(cuda_benchmark bm_lib)

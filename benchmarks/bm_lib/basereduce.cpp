@@ -7,7 +7,7 @@ void BaseReduce<T>::callKernel(benchmark::State &state) {
 
 template <typename T>
 void BaseReduce<T>::SetUp(const ::benchmark::State &state) {
-  dataSize = state.range(0) * state.range(0) * 100;
+  dataSize = state.range(0);
   // Populate array
   cudaMalloc((void **)&d_array, sizeof(T) * dataSize);
   cudaMallocManaged((void **)&array, sizeof(T) * dataSize);
@@ -21,17 +21,17 @@ T *BaseReduce<T>::getDeviceArray() {
 
 template <typename T>
 void BaseReduce<T>::shuffle(const ::benchmark::State &st) {
-  dataSize = st.range(0) * st.range(0) * 100;
+  dataSize = st.range(0);
   cudaMemcpy(d_array, array, sizeof(T) * dataSize, cudaMemcpyDeviceToDevice);
 }
 
 template <typename T>
-void BaseReduce<T>::verify(const ::benchmark::State &st) {
-  // for test M, N, K = state.range(0)
-  // cudabm::Gemm<T>(dA, dB, testC, st.range(0), st.range(1), st.range(2));
-  // cudabm::Equal<T>(st.range(0) * st.range(1), dC, testC, 1e-2);
-  // // if (!)
-  //   throw std::runtime_error("Value diff occur in Dense");
+void BaseReduce<T>::verify(const ::benchmark::State &st, T len, T result) {
+  if ((long int)len != (long int)result) {
+    std::cout << "dataSize : " << len << '\n';
+    std::cout << "result : " << (long int)result << '\n';
+    // throw std::invalid_argument("Results are different.");
+  }
 }
 
 template <typename T>
@@ -42,12 +42,22 @@ void BaseReduce<T>::TearDown(const ::benchmark::State &st) {
 
 template <typename T>
 double BaseReduce<T>::getDataSize(const ::benchmark::State &state) {
-  return (double)(state.range(0) * state.range(0) * 100);
+  return (double)(state.range(0));
 }
 
 template <typename T>
 double BaseReduce<T>::getFlops(const ::benchmark::State &state) {
-  return (double)(state.range(0) * state.range(0) * 100);
+  return (double)(state.range(0));
+}
+
+template <typename T>
+void BaseReduce<T>::setBenchmarkCounters(
+    benchmark::State &state) {  // 确保这里是非const引用
+  double iter = state.iterations();
+  state.counters["DATASIZE"] =
+      benchmark::Counter(getDataSize(state), benchmark::Counter::kIsRate);
+  state.counters["TFlops"] = benchmark::Counter(
+      (getDataSize(state) * iter / 1e12), benchmark::Counter::kIsRate);
 }
 
 template class BaseReduce<float>;

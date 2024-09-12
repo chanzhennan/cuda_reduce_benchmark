@@ -21,33 +21,7 @@ class UnrollLastWarp : public BaseReduce<T> {
 
     auto len = BaseReduce<T>::getDataSize(state);
     auto result = GPUReduction4<TPB>(BaseReduce<T>::getDeviceArray(), len);
-
-    if (len != (long int)result) {
-      std::cout << "dataSize : " << len << '\n';
-      std::cout << "result : " << (long int)result << '\n';
-      // throw std::invalid_argument("Results are different.");
-    }
   }
 };
 
-#define BENCHMARK_REDUCE4_OP(name, dType)                              \
-  BENCHMARK_TEMPLATE_DEFINE_F(UnrollLastWarp, name, dType)             \
-  (benchmark::State & st) {                                            \
-    for (auto _ : st) {                                                \
-      callKernel(st);                                                  \
-    }                                                                  \
-    double iter = st.iterations();                                     \
-    st.counters["DATASIZE"] = getDataSize(st);                         \
-    st.counters["TFlops"] = benchmark::Counter(                        \
-        (getDataSize(st) * iter / 1e12), benchmark::Counter::kIsRate); \
-  }                                                                    \
-  BENCHMARK_REGISTER_F(UnrollLastWarp, name)                           \
-      ->Unit(benchmark::kMillisecond)                                  \
-      ->RangeMultiplier(2)                                             \
-      ->Range(1024, 2048);
-
-#define BENCHMARK_REDUCE4_OP_TYPE(dType) \
-  BENCHMARK_REDUCE4_OP(Reduce_##dType, dType)
-
-BENCHMARK_REDUCE4_OP_TYPE(float)
-BENCHMARK_REDUCE4_OP_TYPE(int)
+RegisterBenchmark(UnrollLastWarp, int);

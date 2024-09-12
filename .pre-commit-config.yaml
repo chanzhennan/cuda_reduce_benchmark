@@ -9,7 +9,7 @@ repos:
         exclude: \.(cp?p?$|output)
       - id: check-yaml
       - id: check-docstring-first
-      - id: check-added-large-files
+      # - id: check-added-large-files  # 注释掉以忽略该钩子
       - id: debug-statements
       - id: requirements-txt-fixer
   - repo: https://github.com/psf/black

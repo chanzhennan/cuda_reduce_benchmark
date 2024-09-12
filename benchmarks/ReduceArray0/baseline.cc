@@ -10,8 +10,8 @@
 #include <stdexcept>
 #include <vector>
 
-#include "bm_lib/basereduce.h"
-#include "bm_lib/utils.h"
+#include "bm_base/basereduce.h"
+#include "bmlib/utils.h"
 
 template <typename T>
 class Baseline : public BaseReduce<T> {
@@ -27,3 +27,4 @@ class Baseline : public BaseReduce<T> {
 
 // 使用示例
 RegisterBenchmark(Baseline, int);
+RegisterBenchmark(Baseline, float);

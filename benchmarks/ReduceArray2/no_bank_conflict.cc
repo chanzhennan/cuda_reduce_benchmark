@@ -10,8 +10,8 @@
 #include <stdexcept>
 #include <vector>
 
-#include "bm_lib/basereduce.h"
-#include "bm_lib/utils.h"
+#include "bm_base/basereduce.h"
+#include "bmlib/utils.h"
 
 template <typename T>
 class NoBankConflict : public BaseReduce<T> {
@@ -25,3 +25,4 @@ class NoBankConflict : public BaseReduce<T> {
 };
 
 RegisterBenchmark(NoBankConflict, int);
+RegisterBenchmark(NoBankConflict, float);

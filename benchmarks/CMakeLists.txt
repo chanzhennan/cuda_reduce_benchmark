@@ -1,4 +1,4 @@
-add_subdirectory(bm_lib)
+add_subdirectory(bm_base)
 
 set(SOURCE_FILES cuda_benchmark.cc)
 
@@ -21,6 +21,6 @@ list(
   ReduceArray6/shuffle.cu)
 
 cuda_add_executable(cuda_benchmark ${SOURCE_FILES})
-target_link_libraries(cuda_benchmark bm_lib)
+target_link_libraries(cuda_benchmark bm_base bmlib)
 
 install(TARGETS cuda_benchmark RUNTIME)

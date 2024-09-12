@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <vector>
 
-#include "utils.h"
+#include "bmlib/utils.h"
 
 #define RegisterBenchmark(BenchmarkClass, dType)                     \
   BENCHMARK_TEMPLATE_DEFINE_F(BenchmarkClass, Reduce_##dType, dType) \
